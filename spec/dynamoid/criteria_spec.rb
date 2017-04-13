@@ -57,15 +57,15 @@ describe Dynamoid::Criteria do
     expect(User.eval_limit(2).all.size).to eq(2)
   end
 
-  # TODO This test is broken using the AWS SDK adapter.
-  #it 'start with a record' do
+  # TODO: This test is broken using the AWS SDK adapter.
+  # it 'start with a record' do
   #  5.times { |i| User.create(:name => 'Josh', :email => 'josh_#{i}@joshsymonds.com') }
   #  all = User.all
-  #  User.start(all[3]).all.should eq(all[4..-1])
-  #
+  #  expect(User.start(all[3]).all).to eq(all[4..-1])
+
   #  all = User.where(:name => 'Josh').all
-  #  User.where(:name => 'Josh').start(all[3]).all.should eq(all[4..-1])
-  #end
+  #  expect(User.where(:name => 'Josh').start(all[3]).all).to eq(all[4..-1])
+  # end
 
   it 'send consistent option to adapter' do
     pending "This test is broken as we are overriding the consistent_read option to true inside the adapter"
