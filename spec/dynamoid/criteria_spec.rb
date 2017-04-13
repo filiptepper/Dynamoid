@@ -67,22 +67,21 @@ describe Dynamoid::Criteria do
   #  expect(User.where(:name => 'Josh').start(all[3]).all).to eq(all[4..-1])
   # end
 
-  it 'send consistent option to adapter' do
-    pending "This test is broken as we are overriding the consistent_read option to true inside the adapter"
-    expect(Dynamoid::Adapter).to receive(:get_item) { |table_name, key, options| options[:consistent_read] == true }
-    User.where(:name => 'x').consistent.first
+  context 'User table' do
+    before(:each) do
+      User.create_table
+      Tweet.create_table
+    end
 
-    expect(Dynamoid::Adapter).to receive(:query) { |table_name, options| options[:consistent_read] == true }.returns([])
-    Tweet.where(:tweet_id => 'xx', :group => 'two').consistent.all
+    it 'send consistent option to adapter' do
+      expect(Dynamoid.adapter).to receive(:scan) { |table_name, key, options| expect(options[:consistent_read]).to be(true) }.and_return([])
+      User.where(:name => 'x').consistent.first
 
-    expect(Dynamoid::Adapter).to receive(:query) { |table_name, options| options[:consistent_read] == false }.returns([])
-    Tweet.where(:tweet_id => 'xx', :group => 'two').all
+      expect(Dynamoid.adapter).to receive(:query) { |table_name, options| expect(options[:consistent_read]).to be(true) }.and_return([])
+      Tweet.where(:tweet_id => 'xx', :group => 'two').consistent.all
+
+      expect(Dynamoid.adapter).to receive(:query) { |table_name, options| expect(options[:consistent_read]).to be(false) }.and_return([])
+      Tweet.where(:tweet_id => 'xx', :group => 'two').all
+    end
   end
-
-  it 'raises exception when consistent_read is used with scan' do
-    expect do
-      User.where(:password => 'password').consistent.first
-    end.to raise_error(Dynamoid::Errors::InvalidQuery)
-  end
-
 end
