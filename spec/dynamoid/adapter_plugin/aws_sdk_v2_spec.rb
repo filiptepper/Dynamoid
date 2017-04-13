@@ -215,13 +215,6 @@ describe Dynamoid::AdapterPlugin::AwsSdkV2 do
       expect(Dynamoid.adapter.get_item(test_table1, '1')).to eq({:id => '1', :name => 'Josh'})
     end
 
-    # BatchGetItem
-    it 'passes options to underlying BatchGet call' do
-      pending "at the moment passing the options to underlying batch get is not supported"
-      expect_any_instance_of(Aws::DynamoDB::Client).to receive(:batch_get_item).with(:request_items => {test_table1 => {:keys => [{'id' => '1'}, {'id' => '2'}], :consistent_read => true}}).and_call_original
-      described_class.batch_get_item({test_table1 => ['1', '2']}, :consistent_read => true)
-    end
-
     it "performs BatchGetItem with singular keys" do
       Dynamoid.adapter.put_item(test_table1, {:id => '1', :name => 'Josh'})
       Dynamoid.adapter.put_item(test_table2, {:id => '1', :name => 'Justin'})
