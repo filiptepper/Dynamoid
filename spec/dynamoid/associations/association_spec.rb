@@ -166,10 +166,9 @@ describe Dynamoid::Associations::Association do
   end
 
   it 'loads association one time only' do
-    pending("FIXME: find_target doesn't exist anymore")
     sponsor = magazine.sponsor.create
 
-    expect(magazine.sponsor).to receive(:find_target).once.and_return(sponsor)
+    expect(Dynamoid.adapter).to receive(:read).once.and_call_original
 
     magazine.sponsor.hash_key
     magazine.sponsor.hash_key
