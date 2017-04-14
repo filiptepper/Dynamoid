@@ -146,7 +146,7 @@ module Dynamoid #:nodoc:
     #
     # @since 0.2.0
     def set_created_at
-      self.created_at = DateTime.now.in_time_zone(Time.zone) if Dynamoid::Config.timestamps
+      self.created_at = DateTime.now.in_time_zone(Time.zone) if Dynamoid::Config.timestamps && self.created_at.nil?
     end
 
     # Automatically called during the save callback to set the updated_at time.

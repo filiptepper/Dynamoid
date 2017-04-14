@@ -28,6 +28,15 @@ describe Dynamoid::Fields do
     expect(address.updated_at).to be_a DateTime
   end
 
+  it 'does not override created_at when set before create' do
+    created_at = DateTime.new(2010, 01, 01, 8, 0, 0)
+    address.created_at = created_at
+    address.save
+
+    address.reload
+    expect(address.created_at).to eq(created_at)
+  end
+
   context 'query attributes' do
     it 'are declared' do
       expect(address.city?).to be_falsey
