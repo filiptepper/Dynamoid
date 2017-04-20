@@ -498,11 +498,11 @@ module Dynamoid
 
         request = { table_name: table_name }
         request[:limit] = batch || limit if batch || limit
+
         request[:scan_filter] = scan_hash.reduce({}) do |memo, kvp|
           memo[kvp[0].to_s] = {
-            attribute_value_list: [kvp[1]],
-            # TODO: Provide support for all comparison operators
-            comparison_operator: EQ
+            attribute_value_list: [kvp[1].values[0]],
+            comparison_operator: RANGE_MAP[kvp[1].keys[0]]
           }
           memo
         end if scan_hash.present?

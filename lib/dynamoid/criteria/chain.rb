@@ -143,7 +143,7 @@ module Dynamoid #:nodoc:
         end
 
         Enumerator.new do |yielder|
-          Dynamoid.adapter.scan(source.table_name, query, scan_opts).each do |hash|
+          Dynamoid.adapter.scan(source.table_name, scan_query, scan_opts).each do |hash|
             yielder.yield source.from_database(hash)
           end
         end
@@ -167,7 +167,15 @@ module Dynamoid #:nodoc:
           { :range_between => val }
         when 'begins_with'
           { :range_begins_with => val }
+        else
+          { :range_eq => val }
         end
+      end
+
+      def scan_query
+        Hash[query.map do |key, value|
+          [key.to_s.split('.')[0], range_hash(key)]
+        end]
       end
 
       def range_query

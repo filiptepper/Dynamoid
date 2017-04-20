@@ -250,15 +250,32 @@ describe Dynamoid::Finders do
 
     describe 'custom range queries' do
       describe 'string comparisons' do
-        it 'filters based on begins_with operator' do
-          time = DateTime.now
-          Post.create(:post_id => 1, :posted_at => time, :name => "fb_post")
-          Post.create(:post_id => 1, :posted_at => time + 1.day, :name => "blog_post")
+        describe 'with secondary index' do
+          it 'filters based on begins_with operator' do
+            time = DateTime.now
+            Post.create(:post_id => 1, :posted_at => time, :name => "fb_post")
+            Post.create(:post_id => 1, :posted_at => time + 1.day, :name => "blog_post")
 
-          posts = Post.find_all_by_secondary_index(
-            {:post_id => "1"}, :range => {"name.begins_with" => "blog_"}
-          )
-          expect(posts.map(&:name)).to eql ["blog_post"]
+            posts = Post.find_all_by_secondary_index(
+              {:post_id => "1"}, :range => {"name.begins_with" => "blog_"}
+            )
+            expect(posts.map(&:name)).to eql ["blog_post"]
+          end
+        end
+
+        describe 'with no secondary index' do
+          it 'filters based on begins_with operator' do
+            Message.create(
+              message_id: 'foobar',
+              time:       DateTime.now,
+              text:       'hello, world!'
+            )
+            messages = Message.where(
+              'text.begins_with' => 'hello'
+            ).all
+
+            expect(messages.map(&:text)[0]).to eq("hello, world!")
+          end
         end
       end
 
