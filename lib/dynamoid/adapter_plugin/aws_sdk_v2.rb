@@ -501,7 +501,7 @@ module Dynamoid
 
         request[:scan_filter] = scan_hash.reduce({}) do |memo, kvp|
           memo[kvp[0].to_s] = {
-            attribute_value_list: [kvp[1].values[0]],
+            attribute_value_list: [kvp[1].values[0]].flatten,
             comparison_operator: RANGE_MAP[kvp[1].keys[0]]
           }
           memo
