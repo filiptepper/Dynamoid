@@ -41,7 +41,7 @@ describe Dynamoid::Persistence do
         table :name => :addresses
         field :city
 
-        before_destroy {|i| false }
+        before_destroy {|i| throw(:abort) }
       end
     end
 
