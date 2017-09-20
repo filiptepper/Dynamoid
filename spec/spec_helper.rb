@@ -8,7 +8,7 @@ require "rspec"
 require "rspec/retry"
 require "dynamoid"
 require "pry"
-require "aws-sdk-resources"
+require "aws-sdk-dynamodb"
 
 require "dynamodb_local"
 
